@@ -24,10 +24,13 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 
+import { fetchDevices } from '../services/devices'
+
 export default class Devices extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      devices: [],
       openAddDeviceDialog: false,
       openDeviceDetailsDialog: false,
       selectedDeviceId: null,
@@ -35,12 +38,22 @@ export default class Devices extends React.Component {
     }
   }
 
+  componentDidMount () {
+    this.fetchDevices()
+  }
+
+  fetchDevices = async () => {
+    const devices = await fetchDevices()
+    this.setState({devices})
+  }
+
+  // To delete
   getDevices = () => [
-    {id: 1, name: 'primer', developerId: 'ASDF1234gjkk', status: 'active', working: 'ok'},
-    {id: 2, name: 'second', developerId: 'XDB9876dgjkk', status: 'disabled', working: 'ok'}
+    {id: 1, name: 'primer', unique_id: 'ASDF1234gjkk', status: 'active', working: 'ok'},
+    {id: 2, name: 'second', unique_id: 'XDB9876dgjkk', status: 'disabled', working: 'ok'}
   ]
 
-  getDevice = (id) => _.find(this.getDevices(), {id})
+  getDevice = (id) => _.find(this.state.devices, {id})
 
   renderToolbar() {
     return (
@@ -86,10 +99,10 @@ export default class Devices extends React.Component {
     return (
       <FormGroup row>
         {_.map(days, day => (
-          <FormControlLabel 
-            key={day} 
+          <FormControlLabel
+            key={day}
             control={
-              <Switch 
+              <Switch
                 checked={false}
                 onChange={this.setSelectedDay(day)}
                 value={day}
@@ -145,7 +158,7 @@ export default class Devices extends React.Component {
         <DialogTitle>New Device</DialogTitle>
         <DialogContent style={{width: '400px'}}>
           <form>
-            <TextField 
+            <TextField
               id='deviceName'
               label='name'
               value={this.state.deviceName}
@@ -178,7 +191,7 @@ export default class Devices extends React.Component {
         <DialogContent style={{width: '600px'}}>
           <div style={{marginBottom: '20px'}}>
             <div style={{float: 'left', marginRight: '50px'}}>DeveloperId</div>
-            <div>{device.developerId}</div>
+            <div>{device.unique_id}</div>
           </div>
           <Divider />
           <div style={{marginTop: '20px'}}>
@@ -218,7 +231,7 @@ export default class Devices extends React.Component {
   }
 
   renderDevicesTable () {
-    const devices = this.getDevices()
+    const { devices } = this.state
     return (
       <Table>
         <TableHead>

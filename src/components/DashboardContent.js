@@ -2,17 +2,35 @@ import React from 'react'
 
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
-
 import Memory from '@material-ui/icons/Memory';
 
+import { fetchDeviceCount } from '../services/devices'
+
 export default class DashboardContent extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      totalDevices: 0
+    }
+  }
+
+  componentDidMount () {
+    this.getDevices()
+  }
+
+  getDevices = async () => {
+    const {total_devices: totalDevices} = await fetchDeviceCount()
+    console.log(totalDevices)
+    this.setState({totalDevices})
+  }
+
   renderActiveDevices () {
     const cardStyle = {
       width: '300px'
     }
 
     const iconStyle = {
-      float: 'left', 
+      float: 'left',
       color: 'green',
       textAlign: 'center',
       height: '1.5em',
@@ -40,7 +58,7 @@ export default class DashboardContent extends React.Component {
             </div>
             <div>
               <div style={nameStyle}>Mis dispositivos activos</div>
-              <div style={totalHightlight}>0</div>
+              <div style={totalHightlight}>{this.state.totalDevices}</div>
             </div>
           </div>
         </CardContent>
