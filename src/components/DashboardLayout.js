@@ -1,9 +1,10 @@
 import React from 'react'
-import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Link, Switch, Route, withRouter } from 'react-router-dom'
 
 import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
+import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import ListItem from '@material-ui/core/ListItem'
@@ -17,15 +18,28 @@ import Memory from '@material-ui/icons/Memory';
 import pomelo_logo from '../static/images/pomelo_logo.png';
 import DashboardContent from './DashboardContent'
 import Devices from './Devices'
+import { logoutUser } from './../utils/auth'
 
-export default class DashboardLayout extends React.Component {
+
+class DashboardLayout extends React.Component {
+  goToLogin = () => {
+    const { history } = this.props
+    history.push("login")
+  }
+  
+  logout = () => {
+    logoutUser()
+    this.goToLogin()
+  }
+
   renderTopToolbar () {
     const appBarStyle = {
       display: 'flex',
       zIndex: 5000,
       backgroundColor: '#6a944f',
       top: 0,
-      left: 'auto'
+      left: 'auto',
+      flexGrow: 1,
     }
 
     const imageStyle = {
@@ -36,6 +50,7 @@ export default class DashboardLayout extends React.Component {
       <AppBar position="absolute" style={appBarStyle}>
         <Toolbar>
           <img alt={"Pomelo logo"} style={imageStyle} src={pomelo_logo} />
+          <Button color="inherit" onClick={this.logout}>Logout</Button>
         </Toolbar>
       </AppBar>
 
@@ -56,7 +71,7 @@ export default class DashboardLayout extends React.Component {
       flexDirection: 'column'
     }
 
-    
+
 
     return (
       <Drawer variant="permanent" style={drawerStyle}>
@@ -115,3 +130,5 @@ export default class DashboardLayout extends React.Component {
     )
   }
 }
+
+export default withRouter(DashboardLayout)

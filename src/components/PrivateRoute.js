@@ -1,13 +1,13 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import {authenticated} from './../constants'
+import {isLoggedIn} from './../utils/auth'
 
 export default ({component: Component, ...params}) => (
   <Route
     {...params}
     render = {
       props => (
-        authenticated ? (<Component {...props} />) : ( <Redirect to="/login"/> )
+        isLoggedIn() ? (<Component {...props} />) : ( <Redirect to="/login"/> )
       )
     }
   />

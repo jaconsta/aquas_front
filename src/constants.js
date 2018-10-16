@@ -1,1 +1,1 @@
-export const authenticated = true
+export const authenticated = false
