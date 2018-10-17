@@ -24,7 +24,7 @@ import pomelo_logo from '../static/images/pomelo_logo.png';
    }
 
    loginWasOk = loginResponse => {
-     storeUserCredentials(loginResponse)
+     storeUserCredentials(loginResponse.data)
      this.goToDashboard()
    }
 

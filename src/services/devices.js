@@ -7,8 +7,15 @@ export const fetchDeviceCount = async () => {
     return data
 }
 
-
 export const fetchDevices = async () => {
     const { data } = await apiRequest({url: 'devices/'})
     return data
+}
+
+export const addDevice = async (body) => {
+  return apiRequest({url: 'devices/', method: 'post', body})
+}
+
+export const setDeviceSchedule = async (body) => {
+  return apiRequest({url: 'devices_sprinkle/', method: 'post', body})
 }

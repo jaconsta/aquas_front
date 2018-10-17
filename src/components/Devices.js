@@ -24,7 +24,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 
-import { fetchDevices } from '../services/devices'
+import { fetchDevices, addDevice, setDeviceSchedule } from '../services/devices'
 
 export default class Devices extends React.Component {
   constructor (props) {
@@ -34,10 +34,22 @@ export default class Devices extends React.Component {
       openAddDeviceDialog: false,
       openDeviceDetailsDialog: false,
       selectedDeviceId: null,
-      deviceName: ''
+      deviceName: '',
+      dialog: {
+        sprinkles: {monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false, sunday: false},
+        time: {hour: 0, minute: 0, am_pm: 'am'}
+      }
     }
   }
 
+  dialogDefaults = () => {
+    this.setState({
+      dialog: {
+        sprinkles: {monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false, sunday: false},
+        time: {hour: 0, minute: 0, am_pm: 'am'}
+      }
+    })
+  }
   componentDidMount () {
     this.fetchDevices()
   }
@@ -81,17 +93,42 @@ export default class Devices extends React.Component {
 
   setSelectedDay = (day) => (event) => {
     console.log('setSelectedDay => ', day, event.target.checked)
+    const { dialog } = this.state
+    const { sprinkles } = dialog
+    this.setState({dialog: {...dialog, sprinkles: {...sprinkles, [day]: event.target.checked}}})
   }
 
   setSelectedTime = (field) => (event) => {
     console.log('setSelectedTime =>', field, event.target.value)
+    const { dialog } = this.state
+    const { time } = dialog
+    this.setState({dialog: {...dialog, time: {...time, [field]: event.target.value}}})
+
   }
 
   setDeviceName = (e) => {
     this.setState({deviceName: e.target.value})
   }
+
   addNewDevice = () => {
     console.log('New Device!')
+    this.postDevice()
+  }
+
+  postDevice = async () => {
+    const { deviceName } = this.state
+    try {
+      await addDevice ({name: deviceName})
+      this.fetchDevices()
+    } catch (e) {
+      console.log('could not save device.')
+    }
+  }
+
+  updateScheduling = async () => {
+    const { dialog, selectedDeviceId } = this.state
+    await setDeviceSchedule({...dialog.sprinkles, ...dialog.time, device: selectedDeviceId})
+    this.hideDeviceDetailsDialog()
   }
 
   renderDaysSwitched = () => {
@@ -103,7 +140,7 @@ export default class Devices extends React.Component {
             key={day}
             control={
               <Switch
-                checked={false}
+                checked={this.state.dialog.sprinkles[day]}
                 onChange={this.setSelectedDay(day)}
                 value={day}
               />
@@ -118,8 +155,8 @@ export default class Devices extends React.Component {
   renderTimeFields = () => {
     const options = [
       {name: 'hour', options: _.range(0, 12)},
-      {name: 'minutes', options: _.range(0, 60)},
-      {name: 'timeFormat', options: ['am', 'pm']},
+      {name: 'minute', options: _.range(0, 60)},
+      {name: 'am_pm', options: ['am', 'pm']},
     ]
     const fieldStyle = {
       width: '100px'
@@ -130,7 +167,7 @@ export default class Devices extends React.Component {
           <FormControl key={formField.name}  style={fieldStyle}>
             <InputLabel>{_.upperFirst(formField.name)}</InputLabel>
             <Select
-              value={''}
+              value={this.state.dialog.time[formField.name]}
               onChange={this.setSelectedTime(formField.name)}
             >
               {_.map(formField.options, option => (
@@ -201,7 +238,7 @@ export default class Devices extends React.Component {
               {this.renderTimeFields()}
             </div>
             <div>
-              <Button color='primary'>
+              <Button color='primary' onClick={this.updateScheduling}>
                 Update
               </Button>
               <Button color='secondary'>
