@@ -23,8 +23,10 @@ import TextField from '@material-ui/core/TextField'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
+import AddIcon from '@material-ui/icons/Add'
+import Snackbar from '@material-ui/core/Snackbar'
 
-import { fetchDevices, addDevice, setDeviceSchedule } from '../services/devices'
+import { fetchDevices, addDevice, setDeviceSchedule, fetchDeviceSchedule, setSprinkleNow } from '../services/devices'
 
 export default class Devices extends React.Component {
   constructor (props) {
@@ -35,18 +37,20 @@ export default class Devices extends React.Component {
       openDeviceDetailsDialog: false,
       selectedDeviceId: null,
       deviceName: '',
-      dialog: {
-        sprinkles: {monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false, sunday: false},
-        time: {hour: 0, minute: 0, am_pm: 'am'}
-      }
+      sprinkleSchedule: {
+        monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false, sunday: false,
+        hour: 0, minute: 0, am_pm: 'am'
+      },
+      snackbarMessage: '',
+      snackbarOpen: false
     }
   }
 
   dialogDefaults = () => {
     this.setState({
-      dialog: {
-        sprinkles: {monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false, sunday: false},
-        time: {hour: 0, minute: 0, am_pm: 'am'}
+      sprinkleSchedule: {
+        monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false, sunday: false,
+        hour: 0, minute: 0, am_pm: 'am'
       }
     })
   }
@@ -57,6 +61,16 @@ export default class Devices extends React.Component {
   fetchDevices = async () => {
     const devices = await fetchDevices()
     this.setState({devices})
+  }
+
+  fetchDeviceSprinkle = async () => {
+    const { selectedDeviceId } = this.state
+    try {
+        const schedule = await fetchDeviceSchedule(selectedDeviceId)
+        this.setState({sprinkleSchedule: schedule})
+    } catch (e) {
+      this.dialogDefaults()
+    }
   }
 
   // To delete
@@ -84,7 +98,7 @@ export default class Devices extends React.Component {
   }
 
   showDeviceDetailsDialog = (deviceId) => {
-    this.setState({openDeviceDetailsDialog: true, selectedDeviceId: deviceId})
+    this.setState({openDeviceDetailsDialog: true, selectedDeviceId: deviceId}, this.fetchDeviceSprinkle)
   }
 
   hideDeviceDetailsDialog = () => {
@@ -92,18 +106,22 @@ export default class Devices extends React.Component {
   }
 
   setSelectedDay = (day) => (event) => {
-    console.log('setSelectedDay => ', day, event.target.checked)
-    const { dialog } = this.state
-    const { sprinkles } = dialog
-    this.setState({dialog: {...dialog, sprinkles: {...sprinkles, [day]: event.target.checked}}})
+    const { sprinkleSchedule } = this.state
+    console.log(sprinkleSchedule)
+    this.setState({sprinkleSchedule: {...sprinkleSchedule, [day]: event.target.checked}})
   }
 
   setSelectedTime = (field) => (event) => {
-    console.log('setSelectedTime =>', field, event.target.value)
-    const { dialog } = this.state
-    const { time } = dialog
-    this.setState({dialog: {...dialog, time: {...time, [field]: event.target.value}}})
+    const { sprinkleSchedule } = this.state
+    this.setState({sprinkleSchedule: {...sprinkleSchedule, [field]: event.target.value}})
+  }
 
+  showSnackbar = (snackbarMessage) => {
+    this.setState({snackbarOpen: true, snackbarMessage})
+  }
+
+  handleSnackbarClose = () => {
+    this.setState({snackbarOpen: false, snackbarMessage: ''})
   }
 
   setDeviceName = (e) => {
@@ -111,7 +129,6 @@ export default class Devices extends React.Component {
   }
 
   addNewDevice = () => {
-    console.log('New Device!')
     this.postDevice()
   }
 
@@ -125,9 +142,20 @@ export default class Devices extends React.Component {
     }
   }
 
+  setSprinkleNow = (deviceId) => async () => {
+    console.log('sfasdf')
+    try {
+      await setSprinkleNow(deviceId)
+      this.showSnackbar('Sprinkle programmed')
+    } catch (e) {
+      this.showSnackbar('Could not send it.')
+    }
+  }
+
   updateScheduling = async () => {
-    const { dialog, selectedDeviceId } = this.state
-    await setDeviceSchedule({...dialog.sprinkles, ...dialog.time, device: selectedDeviceId})
+    const { sprinkleSchedule, selectedDeviceId } = this.state
+    console.log('updateScheduling', sprinkleSchedule)
+    await setDeviceSchedule({...sprinkleSchedule, device: selectedDeviceId})
     this.hideDeviceDetailsDialog()
   }
 
@@ -140,7 +168,7 @@ export default class Devices extends React.Component {
             key={day}
             control={
               <Switch
-                checked={this.state.dialog.sprinkles[day]}
+                checked={this.state.sprinkleSchedule[day]}
                 onChange={this.setSelectedDay(day)}
                 value={day}
               />
@@ -167,7 +195,7 @@ export default class Devices extends React.Component {
           <FormControl key={formField.name}  style={fieldStyle}>
             <InputLabel>{_.upperFirst(formField.name)}</InputLabel>
             <Select
-              value={this.state.dialog.time[formField.name]}
+              value={this.state.sprinkleSchedule[formField.name]}
               onChange={this.setSelectedTime(formField.name)}
             >
               {_.map(formField.options, option => (
@@ -241,7 +269,7 @@ export default class Devices extends React.Component {
               <Button color='primary' onClick={this.updateScheduling}>
                 Update
               </Button>
-              <Button color='secondary'>
+              <Button color='secondary' onClick={this.dialogDefaults}>
                 Reset
               </Button>
             </div>
@@ -261,8 +289,13 @@ export default class Devices extends React.Component {
     return (
       <TableRow key={id} onClick={e => this.showDeviceDetailsDialog(id)}>
         <TableCell>{name}</TableCell>
-        <TableCell>{status}</TableCell>
+        <TableCell>{status === 'act' ? 'active': 'disabled'}</TableCell>
         <TableCell>{working}</TableCell>
+        <TableCell>
+          <Button variant="fab" mini color="secondary" onClick={this.setSprinkleNow(id)}  aria-label="Run">
+          <AddIcon />
+          </Button>
+        </TableCell>
       </TableRow>
     )
   }
@@ -276,6 +309,7 @@ export default class Devices extends React.Component {
             <TableCell>Name</TableCell>
             <TableCell>State</TableCell>
             <TableCell>Working</TableCell>
+            <TableCell>Water Now</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -312,6 +346,21 @@ export default class Devices extends React.Component {
     )
   }
 
+  renderErrorNotification () {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={this.state.snackbarOpen}
+        onClose={this.handleSnackbarClose}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        style={{top: '90px'}}
+        message={<span id="message-id">{this.state.snackbarMessage}</span>}
+      />
+    )
+  }
+
   render () {
     return (
       <div>
@@ -320,6 +369,7 @@ export default class Devices extends React.Component {
         {this.renderUserDevices()}
         {this.renderAddDeviceDialog()}
         {this.renderDeviceDialog()}
+        {this.renderErrorNotification()}
       </div>
     )
   }

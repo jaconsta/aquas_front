@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 import { apiRequest } from './requests'
 
 export const fetchDeviceCount = async () => {
@@ -18,4 +16,13 @@ export const addDevice = async (body) => {
 
 export const setDeviceSchedule = async (body) => {
   return apiRequest({url: 'devices_sprinkle/', method: 'post', body})
+}
+
+export const fetchDeviceSchedule = async (deviceId) => {
+  const { data } = await apiRequest({url: `devices_sprinkle/${deviceId}/`})
+  return data
+}
+
+export const setSprinkleNow = (deviceId) => {
+  return apiRequest({url: `devices_sprinkle/${deviceId}/now/`, method: 'post'})
 }
