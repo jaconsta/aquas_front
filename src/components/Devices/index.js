@@ -1,43 +1,35 @@
 import _ from 'lodash'
 import React from 'react'
 
-import Paper from '@material-ui/core/Paper'
-import Button from '@material-ui/core/Button'
-import Checkbox from '@material-ui/core/Checkbox'
-import Toolbar from '@material-ui/core/Toolbar'
-import Table from '@material-ui/core/Table'
-import TableHead from '@material-ui/core/TableHead'
-import TableBody from '@material-ui/core/TableBody'
-import TableRow from '@material-ui/core/TableRow'
-import TableCell from '@material-ui/core/TableCell'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import Divider from '@material-ui/core/Divider'
-import FormControl from '@material-ui/core/FormControl'
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Switch from '@material-ui/core/Switch'
-import TextField from '@material-ui/core/TextField'
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import AddIcon from '@material-ui/icons/Add'
 import Snackbar from '@material-ui/core/Snackbar'
 
-import { fetchDevices, addDevice, setDeviceSchedule, fetchDeviceSchedule, setSprinkleNow } from '../../services/devices'
+import AddDeviceButton from './AddDeviceButton'
+import AddDeviceDialog from './AddDeviceDialog'
+import DeviceDetailsDialog from './DeviceDetailsDialog'
+import UserDevicesTable from './UserDevicesTable'
+import { 
+  fetchDevices, 
+  addDevice, 
+  setDeviceSchedule, 
+  fetchDeviceSchedule, 
+  setSprinkleNow 
+} from '../../services/devices'
+
+const defaultAddNew = {
+  open: false,
+  name: ''
+}
 
 export default class Devices extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       devices: [],
-      openAddDeviceDialog: false,
       openDeviceDetailsDialog: false,
       selectedDeviceId: null,
-      deviceName: '',
+      addNewDialog: {
+        ...defaultAddNew
+      },
       sprinkleSchedule: {
         monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: false, sunday: false,
         hour: 0, minute: 0, am_pm: 'am'
@@ -74,35 +66,43 @@ export default class Devices extends React.Component {
     }
   }
 
-  // To delete
-  getDevices = () => [
-    {id: 1, name: 'primer', unique_id: 'ASDF1234gjkk', status: 'active', working: 'ok'},
-    {id: 2, name: 'second', unique_id: 'XDB9876dgjkk', status: 'disabled', working: 'ok'}
-  ]
-
   getDevice = (id) => _.find(this.state.devices, {id})
 
-  renderToolbar() {
-    return (
-      <Toolbar>
-        Actual devices
-      </Toolbar>
-    )
-  }
 
+  // Add device Dialog actions
   showAddDeviceDialog = () => {
-    this.setState({openAddDeviceDialog: true})
+    this.setState({addNewDialog: {...this.state.addNewDialog, open: true}})
   }
 
-  hideAddDeviceDialog = () => {
-    this.setState({openAddDeviceDialog: false})
+  closeAddDeviceDialog = () => {
+    this.setState({ addNewDialog: {...defaultAddNew} })
   }
 
+  handleChangeAddDevice = (e) => {
+    const name = e.target.value
+    this.setState({ addNewDialog: {...this.state.addNewDialog, name} })
+  }
+
+  postDevice = async () => {
+    const { name } = this.state.addNewDialog
+    try {
+      await addDevice({ name })
+      this.closeAddDeviceDialog()
+      this.fetchDevices()
+    } catch (e) {
+      console.log('could not save device.')
+    }
+  }
+
+  // User Devices actions
+
+
+  // Device details
   showDeviceDetailsDialog = (deviceId) => {
     this.setState({openDeviceDetailsDialog: true, selectedDeviceId: deviceId}, this.fetchDeviceSprinkle)
   }
 
-  hideDeviceDetailsDialog = () => {
+  closeDeviceDetailsDialog = () => {
     this.setState({openDeviceDetailsDialog: false, selectedDeviceId: null})
   }
 
@@ -125,24 +125,6 @@ export default class Devices extends React.Component {
     this.setState({snackbarOpen: false, snackbarMessage: ''})
   }
 
-  setDeviceName = (e) => {
-    this.setState({deviceName: e.target.value})
-  }
-
-  addNewDevice = () => {
-    this.postDevice()
-  }
-
-  postDevice = async () => {
-    const { deviceName } = this.state
-    try {
-      await addDevice ({name: deviceName})
-      this.fetchDevices()
-    } catch (e) {
-      console.log('could not save device.')
-    }
-  }
-
   setSprinkleNow = (deviceId) => async () => {
     try {
       await setSprinkleNow(deviceId)
@@ -156,201 +138,103 @@ export default class Devices extends React.Component {
     const { sprinkleSchedule, selectedDeviceId } = this.state
     console.log('updateScheduling', sprinkleSchedule)
     await setDeviceSchedule({...sprinkleSchedule, device: selectedDeviceId})
-    this.hideDeviceDetailsDialog()
+    this.closeDeviceDetailsDialog()
   }
 
-  renderDaysSwitched = () => {
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    return (
-      <FormGroup row>
-        {_.map(days, day => (
-          <FormControlLabel
-            key={day}
-            control={
-              <Switch
-                checked={this.state.sprinkleSchedule[day]}
-                onChange={this.setSelectedDay(day)}
-                value={day}
-              />
-            }
-            label={day}
-          />
-        ))}
-      </FormGroup>
-    )
-  }
+  // renderDaysSwitched = () => {
+  //   const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+  //   return (
+  //     <FormGroup row>
+  //       {_.map(days, day => (
+  //         <FormControlLabel
+  //           key={day}
+  //           control={
+  //             <Switch
+  //               checked={this.state.sprinkleSchedule[day]}
+  //               onChange={this.setSelectedDay(day)}
+  //               value={day}
+  //             />
+  //           }
+  //           label={day}
+  //         />
+  //       ))}
+  //     </FormGroup>
+  //   )
+  // }
 
-  renderTimeFields = () => {
-    const options = [
-      {name: 'hour', options: _.range(0, 12)},
-      {name: 'minute', options: _.range(0, 60)},
-      {name: 'am_pm', options: ['am', 'pm']},
-    ]
-    const fieldStyle = {
-      width: '100px'
-    }
-    return (
-      <div>
-        {_.map(options, formField => (
-          <FormControl key={formField.name}  style={fieldStyle}>
-            <InputLabel>{_.upperFirst(formField.name)}</InputLabel>
-            <Select
-              value={this.state.sprinkleSchedule[formField.name]}
-              onChange={this.setSelectedTime(formField.name)}
-            >
-              {_.map(formField.options, option => (
-                <MenuItem
-                  key={option}
-                  value={option}
-                >
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-        </FormControl>
+  // renderTimeFields = () => {
+  //   const options = [
+  //     {name: 'hour', options: _.range(0, 12)},
+  //     {name: 'minute', options: _.range(0, 60)},
+  //     {name: 'am_pm', options: ['am', 'pm']},
+  //   ]
+  //   const fieldStyle = {
+  //     width: '100px'
+  //   }
+  //   return (
+  //     <div>
+  //       {_.map(options, formField => (
+  //         <FormControl key={formField.name}  style={fieldStyle}>
+  //           <InputLabel>{_.upperFirst(formField.name)}</InputLabel>
+  //           <Select
+  //             value={this.state.sprinkleSchedule[formField.name]}
+  //             onChange={this.setSelectedTime(formField.name)}
+  //           >
+  //             {_.map(formField.options, option => (
+  //               <MenuItem
+  //                 key={option}
+  //                 value={option}
+  //               >
+  //                 {option}
+  //               </MenuItem>
+  //             ))}
+  //           </Select>
+  //       </FormControl>
 
-        ))}
-      </div>
-    )
-  }
+  //       ))}
+  //     </div>
+  //   )
+  // }
 
-  renderAddDeviceDialog = () => {
-    return (
-      <Dialog
-        open={this.state.openAddDeviceDialog}
-        onClose={this.hideAddDeviceDialog}
-      >
-        <DialogTitle>New Device</DialogTitle>
-        <DialogContent style={{width: '400px'}}>
-          <form>
-            <TextField
-              id='deviceName'
-              label='name'
-              value={this.state.deviceName}
-              onChange={this.setDeviceName}
-              margin='normal'
-            />
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.hideAddDeviceDialog} color='secondary'>
-            Close
-          </Button>
-          <Button onClick={this.addNewDevice} color='primary'>
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
-  }
-
-  renderDeviceDialog = () => {
-    const device = this.getDevice (this.state.selectedDeviceId)
-    if (_.isNil(device)) return null
-    return (
-      <Dialog
-        open={this.state.openDeviceDetailsDialog}
-        onClose={this.hideDeviceDetailsDialog}
-      >
-        <DialogTitle>Your device {device.name}</DialogTitle>
-        <DialogContent style={{width: '600px'}}>
-          <div style={{marginBottom: '20px'}}>
-            <div style={{float: 'left', marginRight: '50px'}}>DeveloperId</div>
-            <div>{device.unique_id}</div>
-          </div>
-          <Divider />
-          <div style={{marginTop: '20px'}}>
-            <div>Schedule sprinkles</div>
-            <div>
-              {this.renderDaysSwitched()}
-              {this.renderTimeFields()}
-            </div>
-            <div>
-              <Button color='primary' onClick={this.updateScheduling}>
-                Update
-              </Button>
-              <Button color='secondary' onClick={this.dialogDefaults}>
-                Reset
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.hideDeviceDetailsDialog} color='secondary'>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
-  }
-
-  renderDeviceRow = (device) => {
-    const {id, name, status, working} = device
-    return (
-      <TableRow key={id}>
-        <TableCell padding="checkbox">
-          <Checkbox />
-        </TableCell>
-        <TableCell style={{color:'green'}} onClick={e => this.showDeviceDetailsDialog(id)}>{name}</TableCell>
-        <TableCell>{status === 'act' ? 'active': 'disabled'}</TableCell>
-        <TableCell>{working}</TableCell>
-        <TableCell>
-          <Button variant="fab" mini color="secondary" onClick={this.setSprinkleNow(id)}  aria-label="Run">
-          <AddIcon />
-          </Button>
-        </TableCell>
-      </TableRow>
-    )
-  }
-
-  renderDevicesTable () {
-    const { devices } = this.state
-    return (
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell padding="checkbox">
-              <Checkbox />
-            </TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>State</TableCell>
-            <TableCell>Working</TableCell>
-            <TableCell>Water Now</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-         { _.map(devices, this.renderDeviceRow)}
-        </TableBody>
-      </Table>
-    )
-  }
-
-  renderUserDevices () {
-    const style = {
-      marginRight: '40px'
-    }
-
-    return (
-      <Paper style={style}>
-        {this.renderToolbar()}
-        {this.renderDevicesTable()}
-      </Paper>
-    )
-  }
-
-  renderAddDevice () {
-    const style = {
-      width: '300px',
-      height: '50px',
-      textAlign: 'center',
-      marginBottom: '20px'
-    }
-    return (
-      <Button onClick={this.showAddDeviceDialog} style={style} variant='contained' color='primary'>
-        + Add Device
-      </Button>
-    )
-  }
+  // renderDeviceDialog = () => {
+  //   const device = this.getDevice (this.state.selectedDeviceId)
+  //   if (_.isNil(device)) return null
+  //   return (
+  //     <Dialog
+  //       open={this.state.openDeviceDetailsDialog}
+  //       onClose={this.closeDeviceDetailsDialog}
+  //     >
+  //       <DialogTitle>Your device {device.name}</DialogTitle>
+  //       <DialogContent style={{width: '600px'}}>
+  //         <div style={{marginBottom: '20px'}}>
+  //           <div style={{float: 'left', marginRight: '50px'}}>DeveloperId</div>
+  //           <div>{device.unique_id}</div>
+  //         </div>
+  //         <Divider />
+  //         <div style={{marginTop: '20px'}}>
+  //           <div>Schedule sprinkles</div>
+  //           <div>
+  //             {this.renderDaysSwitched()}
+  //             {this.renderTimeFields()}
+  //           </div>
+  //           <div>
+  //             <Button color='primary' onClick={this.updateScheduling}>
+  //               Update
+  //             </Button>
+  //             <Button color='secondary' onClick={this.dialogDefaults}>
+  //               Reset
+  //             </Button>
+  //           </div>
+  //         </div>
+  //       </DialogContent>
+  //       <DialogActions>
+  //         <Button onClick={this.closeDeviceDetailsDialog} color='secondary'>
+  //           Close
+  //         </Button>
+  //       </DialogActions>
+  //     </Dialog>
+  //   )
+  // }
 
   renderErrorNotification () {
     return (
@@ -367,14 +251,39 @@ export default class Devices extends React.Component {
     )
   }
 
+  getAddNewDialogProps() {
+    return {
+      ...this.state.addNewDialog,
+      handleClose: this.closeAddDeviceDialog,
+      handleChange: this.handleChangeAddDevice,
+      addNewDevice: this.postDevice
+    }
+  }
+
+  getDevicesTableProps() {
+    return {
+      devices: this.state.devices,
+      showDeviceDetailsDialog: this.showDeviceDetailsDialog,
+      setSprinkleNow: this.setSprinkleNow
+    }
+  }
+
+  getDeviceDetailsProps() {
+    return {
+      device: this.getDevice(this.state.selectedDeviceId),
+      open: this.state.openDeviceDetailsDialog,
+      handleClose: this.closeDeviceDetailsDialog
+    }
+  }
+
   render () {
     return (
       <div>
         <h1>My devices</h1>
-        {this.renderAddDevice()}
-        {this.renderUserDevices()}
-        {this.renderAddDeviceDialog()}
-        {this.renderDeviceDialog()}
+        <AddDeviceButton onClick={this.showAddDeviceDialog} />
+        <AddDeviceDialog {...this.getAddNewDialogProps()}/>
+        <UserDevicesTable {...this.getDevicesTableProps()}/>
+        <DeviceDetailsDialog {...this.getDeviceDetailsProps()} />
         {this.renderErrorNotification()}
       </div>
     )
