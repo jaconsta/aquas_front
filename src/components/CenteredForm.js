@@ -1,13 +1,8 @@
 import React, { Component } from 'react'
 
 import { withStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Paper from '@material-ui/core/Paper'
 import Snackbar from '@material-ui/core/Snackbar'
-import TextField from '@material-ui/core/TextField'
 
 import pomelo_logo from '../static/images/pomelo_logo.png';
 
