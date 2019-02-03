@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from "react-router-dom"
-import axios from 'axios'
-import { storeUserCredentials } from '../utils/auth'
+
+import { userLogin } from '../services/users'
 import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormControl from '@material-ui/core/FormControl'
@@ -16,24 +16,27 @@ import pomelo_logo from '../static/images/pomelo_logo.png';
    constructor (props) {
      super(props)
      this.state = {
-       username: '',
+       email: '',
        password: '',
        rememberMe: false,
        snackbarOpen: false
      }
    }
 
-   loginWasOk = loginResponse => {
-     storeUserCredentials(loginResponse.data)
-     this.goToDashboard()
+   requestLogin = async () => {
+     const { email, password } = this.state
+     try {
+       await userLogin({ email, password })
+       this.goToDashboard()
+     } catch (err) {
+       this.setState({snackbarOpen: true})
+     }
+
    }
 
    handleSubmit = (event) => {
      event.preventDefault()
-     const { username, password } = this.state
-     axios.post('http://localhost:8000/api/auth/login/', {username, password}, {'Access-Control-Allow-Origin': '*'})
-      .then(this.loginWasOk)
-      .catch(() => this.setState({snackbarOpen: true}))
+     this.requestLogin()
    }
 
    handleChange = name => event => {
@@ -89,7 +92,7 @@ import pomelo_logo from '../static/images/pomelo_logo.png';
       <div style={layoutStyle}>
         <Paper style={paperStyle}>
           <div>
-            <img style={imageStyle} src={pomelo_logo} />
+            <img alt="Pomelo logo" style={imageStyle} src={pomelo_logo} />
             <h1 style={titleStyle}>Login</h1>
           </div>
           <form onSubmit={this.handleSubmit}>
@@ -101,7 +104,7 @@ import pomelo_logo from '../static/images/pomelo_logo.png';
                 autoComplete="your email"
                 margin="normal"
                 value={this.state.email}
-                onChange={this.handleChange('username')}
+                onChange={this.handleChange('email')}
               />
             </FormControl>
             <FormControl margin="normal" required fullWidth>

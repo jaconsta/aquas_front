@@ -3,6 +3,7 @@ import React from 'react'
 
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Toolbar from '@material-ui/core/Toolbar'
 import Table from '@material-ui/core/Table'
 import TableHead from '@material-ui/core/TableHead'
@@ -26,7 +27,7 @@ import Select from '@material-ui/core/Select'
 import AddIcon from '@material-ui/icons/Add'
 import Snackbar from '@material-ui/core/Snackbar'
 
-import { fetchDevices, addDevice, setDeviceSchedule, fetchDeviceSchedule, setSprinkleNow } from '../services/devices'
+import { fetchDevices, addDevice, setDeviceSchedule, fetchDeviceSchedule, setSprinkleNow } from '../../services/devices'
 
 export default class Devices extends React.Component {
   constructor (props) {
@@ -143,7 +144,6 @@ export default class Devices extends React.Component {
   }
 
   setSprinkleNow = (deviceId) => async () => {
-    console.log('sfasdf')
     try {
       await setSprinkleNow(deviceId)
       this.showSnackbar('Sprinkle programmed')
@@ -287,8 +287,11 @@ export default class Devices extends React.Component {
   renderDeviceRow = (device) => {
     const {id, name, status, working} = device
     return (
-      <TableRow key={id} onClick={e => this.showDeviceDetailsDialog(id)}>
-        <TableCell>{name}</TableCell>
+      <TableRow key={id}>
+        <TableCell padding="checkbox">
+          <Checkbox />
+        </TableCell>
+        <TableCell style={{color:'green'}} onClick={e => this.showDeviceDetailsDialog(id)}>{name}</TableCell>
         <TableCell>{status === 'act' ? 'active': 'disabled'}</TableCell>
         <TableCell>{working}</TableCell>
         <TableCell>
@@ -306,6 +309,9 @@ export default class Devices extends React.Component {
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell padding="checkbox">
+              <Checkbox />
+            </TableCell>
             <TableCell>Name</TableCell>
             <TableCell>State</TableCell>
             <TableCell>Working</TableCell>
