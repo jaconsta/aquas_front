@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Link, Switch, Route, withRouter } from 'react-router-dom'
+import { Link, Switch, Route, withRouter } from 'react-router-dom'
 
 import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
@@ -26,7 +26,7 @@ class DashboardLayout extends React.Component {
     const { history } = this.props
     history.push("login")
   }
-  
+
   logout = () => {
     logoutUser()
     this.goToLogin()

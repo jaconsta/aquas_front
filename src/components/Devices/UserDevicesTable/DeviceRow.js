@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
-import AddIcon from '@material-ui/icons/Add'
+import PinIcon from '@material-ui/icons/PinDrop'
 
 const styles = {
   deviceName: {
@@ -16,6 +16,9 @@ const styles = {
       fontSize: '0.9em',
       cursor: 'pointer'
     }
+  },
+  pinIcon: {
+    transform: 'rotate(180deg)'
   }
 }
 const DeviceRow = props => {
@@ -30,7 +33,7 @@ const DeviceRow = props => {
       <TableCell>{working}</TableCell>
       <TableCell>
         <Button variant="fab" mini color="secondary" onClick={props.setSprinkleNow(id)}  aria-label="Run">
-        <AddIcon />
+        <PinIcon className={props.classes.pinIcon}/>
         </Button>
       </TableCell>
     </TableRow>

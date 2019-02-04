@@ -9,7 +9,7 @@ import Select from '@material-ui/core/Select'
 const TimeFields = props => {
   const options = [
     {name: 'hour', options: _.range(0, 12)},
-    {name: 'minute', options: _.range(0, 60)},
+    {name: 'minute', options: _.range(0, 60, 5)},
     {name: 'am_pm', options: ['am', 'pm']},
   ]
   const fieldStyle = {
