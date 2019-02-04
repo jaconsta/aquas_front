@@ -2,7 +2,7 @@
 
 # Installation
 
-The following instructions are with yarn, though __npm__ should work too.
+The following instructions are with __yarn__, though __npm__ should work too.
 ```
 $ yarn
 ```
@@ -31,7 +31,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.
 Your app is ready to be deployed!
 
-### `npm run eject`
+`npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
