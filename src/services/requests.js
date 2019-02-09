@@ -5,7 +5,7 @@ import { getUserSessionToken } from '../utils/auth'
 
 export const apiRequest = ({body={}, url='', method='get'}) => {
   const headers = {
-    Authorization: `bearer ${getUserSessionToken()}`
+    Authorization: `Bearer ${getUserSessionToken()}`
   }
 
   return axios({

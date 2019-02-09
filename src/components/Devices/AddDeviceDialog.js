@@ -9,6 +9,10 @@ import TextField from '@material-ui/core/TextField'
 
 
 const AddDeviceDialog = props => {
+  const handleSubmit = e => {
+    e.preventDefault()
+    props.addNewDevice()
+  }
   return (
     <Dialog
       open={props.open}
@@ -16,7 +20,7 @@ const AddDeviceDialog = props => {
     >
       <DialogTitle>New Device</DialogTitle>
       <DialogContent style={{width: '400px'}}>
-        <form>
+        <form onSubmit={handleSubmit}>
           <TextField
             id='deviceName'
             label='name'
@@ -30,7 +34,7 @@ const AddDeviceDialog = props => {
         <Button onClick={props.handleClose} color='secondary'>
           Close
         </Button>
-        <Button onClick={props.addNewDevice} color='primary'>
+        <Button onClick={handleSubmit} type="submit" color='primary'>
           Save
         </Button>
       </DialogActions>

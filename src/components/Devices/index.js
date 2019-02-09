@@ -82,7 +82,7 @@ export default class Devices extends React.Component {
           }
         })
     } catch (e) {
-      this.dialogDefaults()
+      this.resetDetailsDialogToDefaults()
     }
   }
 
@@ -129,6 +129,7 @@ export default class Devices extends React.Component {
     this.setState({
       deviceDetails: {
         ...deviceDetails,
+        isLoading: false,
         sprinkleSchedule: {...deviceDetails.initialSchedule}
       }
     })
