@@ -1,2 +1,2 @@
-export const apiBaseUrl = 'http://192.168.0.8:8080/api/'
+export const apiBaseUrl = 'http://127.0.0.1:8080/api/'
 export const authenticated = false

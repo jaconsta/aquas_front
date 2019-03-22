@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
@@ -26,7 +27,7 @@ const styles = {
   }
 }
 
-const DetailsContent = (props) => {
+const DetailsContent = props => {
   if (props.isLoading) return <CircularProgress />
   return (
     <React.Fragment>
@@ -48,6 +49,16 @@ const DetailsContent = (props) => {
   )
 }
 
+const NextSprinkleSchedule = ({classes, nextSchedule}) => {
+  if (_.isNil(nextSchedule)) return null
+  return (
+    <div className={classes.deviceDetailsContainer}>
+      <div className={classes.developerIdLabel}>Next Schedule</div>
+      <div>{nextSchedule}</div>
+    </div>
+  )
+}
+
 const DeviceDetailsDialog = props => {
   const { device, open, handleClose, classes } = props
   return (
@@ -61,6 +72,7 @@ const DeviceDetailsDialog = props => {
           <div className={classes.developerIdLabel}>DeveloperId</div>
           <div>{device.unique_id}</div>
         </div>
+        <NextSprinkleSchedule classes={classes} nextSchedule={props.sprinkleSchedule.nextSchedule} />
         <DetailsContent {...props} />
       </DialogContent>
       <DialogActions>

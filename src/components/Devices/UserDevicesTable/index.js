@@ -19,6 +19,8 @@ const styles = {
 const UserDevices = props => {
   const deviceProps = device => ({
     device,
+    heartbeat: _.find(props.heartbeats, {device: device.id, connection_status: 'heartbeat'}),
+    sprinkle: _.find(props.heartbeats, {device: device.id, connection_status: 'sprinkle'}),
     showDeviceDetailsDialog: props.showDeviceDetailsDialog,
     setSprinkleNow: props.setSprinkleNow
   })

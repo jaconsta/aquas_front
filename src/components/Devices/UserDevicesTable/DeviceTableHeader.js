@@ -13,7 +13,7 @@ const DeviceTableHeader = props => {
           <Checkbox />
         </TableCell>
         <TableCell>Name</TableCell>
-        <TableCell>State</TableCell>
+        <TableCell>Last sprinkle</TableCell>
         <TableCell>Working</TableCell>
         <TableCell>Water Now</TableCell>
       </TableRow>

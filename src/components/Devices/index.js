@@ -12,7 +12,8 @@ import {
   addDevice,
   setDeviceSchedule,
   fetchDeviceSchedule,
-  setSprinkleNow
+  setSprinkleNow,
+  fetchDeviceLastHeartbeats
 } from '../../services/devices'
 
 const defaultAddNew = {
@@ -29,7 +30,8 @@ const sprinkleDefaults = {
   saturday: false,
   sunday: false,
   hour: 0, minute: 0,
-  am_pm: 'am'
+  am_pm: 'am',
+  nextSchedule: null
 }
 
 const deviceDetailsDefault = {
@@ -49,6 +51,7 @@ export default class Devices extends React.Component {
     super(props)
     this.state = {
       devices: [],
+      heartbeats: {},
       selectedDeviceId: null,
       addNewDialog: {
         ...defaultAddNew
@@ -63,11 +66,17 @@ export default class Devices extends React.Component {
 
   componentDidMount () {
     this.fetchDevices()
+    this.fetchDeviceHeartbeats()
   }
 
   fetchDevices = async () => {
     const devices = await fetchDevices()
     this.setState({devices})
+  }
+
+  fetchDeviceHeartbeats = async () => {
+    const heartbeats = await fetchDeviceLastHeartbeats()
+    this.setState({heartbeats: heartbeats})
   }
 
   fetchDeviceSprinkle = async (deviceId) => {
@@ -215,6 +224,7 @@ export default class Devices extends React.Component {
   getDevicesTableProps() {
     return {
       devices: this.state.devices,
+      heartbeats: this.state.heartbeats,
       showDeviceDetailsDialog: this.showDeviceDetailsDialog,
       setSprinkleNow: this.setSprinkleNow
     }
