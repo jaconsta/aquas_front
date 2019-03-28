@@ -1,8 +1,14 @@
 # Pomelo web front end
 
+# Run / Create docker image
+
+```
+docker build -t jaconsta/aquas_front .
+```
+
 # Installation
 
-The following instructions are with __yarn__, though __npm__ should work too.
+The following instructions use __yarn__, though __npm__ should work too.
 ```
 $ yarn
 ```
