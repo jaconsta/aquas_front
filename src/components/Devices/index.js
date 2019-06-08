@@ -13,7 +13,8 @@ import {
   setDeviceSchedule,
   fetchDeviceSchedule,
   setSprinkleNow,
-  fetchDeviceLastHeartbeats
+  fetchDeviceLastHeartbeats,
+  fetchDeviceLastSprinkle
 } from '../../services/devices'
 
 const defaultAddNew = {
@@ -52,6 +53,7 @@ export default class Devices extends React.Component {
     this.state = {
       devices: [],
       heartbeats: {},
+      lastSprinkles: {},
       selectedDeviceId: null,
       addNewDialog: {
         ...defaultAddNew
@@ -67,6 +69,7 @@ export default class Devices extends React.Component {
   componentDidMount () {
     this.fetchDevices()
     this.fetchDeviceHeartbeats()
+    this.fetchDeviceLastSprinkles()
   }
 
   fetchDevices = async () => {
@@ -77,6 +80,11 @@ export default class Devices extends React.Component {
   fetchDeviceHeartbeats = async () => {
     const heartbeats = await fetchDeviceLastHeartbeats()
     this.setState({heartbeats: heartbeats})
+  }
+
+  fetchDeviceLastSprinkles = async () => {
+    const lastSprinkles = await fetchDeviceLastSprinkle()
+    this.setState({ lastSprinkles })
   }
 
   fetchDeviceSprinkle = async (deviceId) => {
@@ -225,6 +233,7 @@ export default class Devices extends React.Component {
     return {
       devices: this.state.devices,
       heartbeats: this.state.heartbeats,
+      lastSprinkles: this.state.lastSprinkles,
       showDeviceDetailsDialog: this.showDeviceDetailsDialog,
       setSprinkleNow: this.setSprinkleNow
     }

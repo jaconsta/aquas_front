@@ -2,8 +2,8 @@ import React from 'react'
 import _ from 'lodash'
 
 import { withStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
+import Fab from '@material-ui/core/Fab'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import PinIcon from '@material-ui/icons/PinDrop'
@@ -72,9 +72,9 @@ const DeviceRow = props => {
       <TableCell>{lastSprinkle}</TableCell>
       <TableCell><span className={`${props.classes.dot} ${props.classes[isOnline]}`}></span></TableCell>
       <TableCell>
-        <Button variant="fab" mini color="secondary" onClick={props.setSprinkleNow(id)}  aria-label="Run">
-        <PinIcon className={props.classes.pinIcon}/>
-        </Button>
+        <Fab size="small" color="secondary" onClick={props.setSprinkleNow(id)}  aria-label="Run">
+          <PinIcon className={props.classes.pinIcon}/>
+        </Fab>
       </TableCell>
     </TableRow>
   )
