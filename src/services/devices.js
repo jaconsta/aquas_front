@@ -37,6 +37,11 @@ export const fetchDeviceLastHeartbeats = async () => {
   return data
 }
 
+export const fetchDeviceDailySprinkles = async () => {
+  const { data } = await apiRequest({url: `${HEARTBEAT_URL}daily_sprinkles/`})
+  return data
+}
+
 export const fetchDeviceLastSprinkle = async () => {
   const { data } = await apiRequest({url: `${SCHEDULED_DATA_URL}latest/`})
   return data

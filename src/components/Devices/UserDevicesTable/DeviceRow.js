@@ -40,7 +40,7 @@ const getTimezoneOffset = () => (new Date().getTimezoneOffset()) * 60000
 
 const isDeviceOnline = heartbeat => {
   const beat = _.get(heartbeat, 'connection_time')
-  if(_.isNil(beat)) return false
+  if(_.isNil(beat)) return null
 
   const beatDate = (new Date(beat)).getTime() + getTimezoneOffset()
   const now = (new Date()).getTime()
@@ -48,6 +48,13 @@ const isDeviceOnline = heartbeat => {
 
   const dateDiff = now - beatDate
   return dateDiff < fiveMinutes
+}
+
+const deviceDotClassname = heartbeat => {
+  const deviceOnline = isDeviceOnline(heartbeat)
+  if (_.isNil(deviceOnline)) return 'dotUnknown'
+  if (deviceOnline) return 'dotActive'
+  return 'dotOffline'
 }
 
 const getSprinkleDate = sprinkle => {
@@ -60,7 +67,7 @@ const getSprinkleDate = sprinkle => {
 
 const DeviceRow = props => {
   const {id, name} = props.device
-  const isOnline = isDeviceOnline(props.heartbeat) ? 'dotActive' : 'dotOffline'
+  const isOnline = deviceDotClassname(props.heartbeat)
   const lastSprinkle = getSprinkleDate(props.sprinkle)
 
   return (
@@ -72,8 +79,8 @@ const DeviceRow = props => {
       <TableCell>{lastSprinkle}</TableCell>
       <TableCell><span className={`${props.classes.dot} ${props.classes[isOnline]}`}></span></TableCell>
       <TableCell>
-        <Fab size="small" color="secondary" onClick={props.setSprinkleNow(id)}  aria-label="Run">
-          <PinIcon className={props.classes.pinIcon}/>
+        <Fab size="small" color="default" onClick={props.setSprinkleNow(id)}  aria-label="Run">
+          <PinIcon color='primary' className={props.classes.pinIcon} />
         </Fab>
       </TableCell>
     </TableRow>
