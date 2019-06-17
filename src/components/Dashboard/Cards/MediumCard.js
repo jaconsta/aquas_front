@@ -6,10 +6,13 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 
 
-const styles = {
+const styles = theme => ({
   card: {
     width: '400px',
     margin: '10px 0px',
+    [theme.breakpoints.down('xs')]: {
+      width: '95%',
+    }
   },
   cardContent: {
     paddingBottom: '16px !important',
@@ -18,7 +21,7 @@ const styles = {
     color: 'gray',
     marginBottom: '15px',
   }
-}
+})
 
 const MediumCard = props => (
   <Card className={props.classes.card}>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Link, Switch, Route, withRouter } from 'react-router-dom'
 
 import Drawer from '@material-ui/core/Drawer'
@@ -11,6 +11,9 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import Divider from '@material-ui/core/Divider'
+import Hidden from '@material-ui/core/Hidden'
+import MenuIcon from '@material-ui/icons/Menu'
+import IconButton from '@material-ui/core/IconButton'
 
 import Dashboard from '@material-ui/icons/Dashboard';
 import Memory from '@material-ui/icons/Memory';
@@ -22,6 +25,13 @@ import { logoutUser } from './../utils/auth'
 
 
 class DashboardLayout extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      sidebarOpen: false,
+    }
+  }
+
   goToLogin = () => {
     const { history } = this.props
     history.push("login")
@@ -49,6 +59,14 @@ class DashboardLayout extends React.Component {
     return (
       <AppBar position="absolute" style={appBarStyle}>
         <Toolbar>
+          <Hidden smUp implementation="css">
+            <IconButton
+            color={'inherit'}
+              onClick={this.toggleSidebar}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Hidden>
           <img alt={"Pomelo logo"} style={imageStyle} src={pomelo_logo} />
           <Button color="inherit" onClick={this.logout}>Logout</Button>
         </Toolbar>
@@ -57,27 +75,23 @@ class DashboardLayout extends React.Component {
     )
   }
 
+  toggleSidebar = () => {
+    this.setState({ sidebarOpen: !this.state.sidebarOpen })
+  }
+
   renderToolbarSeparator () {
     const toolbarSeparatorStyle = {minHeight: '64px'}
     return (
       <div style={toolbarSeparatorStyle} />
     )
   }
-  renderSidebar () {
-    const drawerStyle = {
-      display: 'flex',
-      position: 'relative',
-      width: '260px',
-      flexDirection: 'column'
-    }
 
-
-
+  renderSidebarContent() {
     return (
-      <Drawer variant="permanent" style={drawerStyle}>
+      <Fragment>
         {this.renderToolbarSeparator()}
         <List>
-          <ListItem component={Link} to="/dashboard" button>
+          <ListItem onClick={this.toggleSidebar} component={Link} to="/dashboard" button>
             <ListItemIcon>
               <Dashboard />
             </ListItemIcon>
@@ -86,7 +100,7 @@ class DashboardLayout extends React.Component {
         </List>
         <Divider />
         <List subheader={<ListSubheader component='div'>General</ListSubheader>}>
-          <ListItem  component={props =>  <Link to='/dashboard/devices' {...props}/>} button>
+          <ListItem onClick={this.toggleSidebar}  component={props =>  <Link to='/dashboard/devices' {...props}/>} button>
             <ListItemIcon>
               <Memory />
             </ListItemIcon>
@@ -94,7 +108,37 @@ class DashboardLayout extends React.Component {
           </ListItem>
         </List>
         <Divider />
-      </Drawer>
+      </Fragment>
+    )
+  }
+
+  renderSidebar () {
+    const drawerStyle = {
+      display: 'flex',
+      position: 'relative',
+      width: '260px',
+      flexDirection: 'column'
+    }
+
+    return (
+      <Fragment>
+        <Hidden xsDown implementation="css">
+          <Drawer variant="permanent" style={drawerStyle}>
+            {this.renderSidebarContent()}
+          </Drawer>
+        </Hidden>
+        <Hidden smUp implementation="css">
+          <Drawer
+            variant="temporary"
+            style={drawerStyle}
+            open={this.state.sidebarOpen}
+            onClose={this.toggleSidebar}
+          >
+            {this.renderSidebarContent()}
+          </Drawer>
+        </Hidden>
+
+      </Fragment>
     )
   }
 
