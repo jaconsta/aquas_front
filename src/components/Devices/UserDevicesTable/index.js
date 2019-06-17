@@ -10,11 +10,23 @@ import DeviceToolbar from './DeviceToolbar'
 import DeviceTableHeader from './DeviceTableHeader'
 import DeviceRow from './DeviceRow'
 
-const styles = {
+const styles = theme => ({
   paper: {
-    marginRight: '40px'
-  }
-}
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto',
+    [theme.breakpoints.up('md')]: {
+      marginRight: '40px',
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: '90%',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '60%',
+    }
+  },
+  table: {
+  },
+})
 
 const UserDevices = props => {
   const deviceProps = device => ({
@@ -29,7 +41,7 @@ const UserDevices = props => {
   return (
     <Paper className={props.classes.paper}>
       <DeviceToolbar />
-      <Table>
+      <Table className={props.classes.table}>
         <DeviceTableHeader />
         <TableBody>
          { _.map(props.devices, device => <DeviceRow key={device.id} {...deviceProps(device)} />) }

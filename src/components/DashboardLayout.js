@@ -59,7 +59,7 @@ class DashboardLayout extends React.Component {
     return (
       <AppBar position="absolute" style={appBarStyle}>
         <Toolbar>
-          <Hidden smUp implementation="css">
+          <Hidden mdUp implementation="css">
             <IconButton
             color={'inherit'}
               onClick={this.toggleSidebar}
@@ -122,12 +122,12 @@ class DashboardLayout extends React.Component {
 
     return (
       <Fragment>
-        <Hidden xsDown implementation="css">
+        <Hidden smDown implementation="css">
           <Drawer variant="permanent" style={drawerStyle}>
             {this.renderSidebarContent()}
           </Drawer>
         </Hidden>
-        <Hidden smUp implementation="css">
+        <Hidden mdUp implementation="css">
           <Drawer
             variant="temporary"
             style={drawerStyle}
