@@ -69,7 +69,7 @@ export default class Devices extends React.Component {
   componentDidMount () {
     this.fetchDevices()
     this.fetchDeviceHeartbeats()
-    this.fetchDeviceLastSprinkles()
+    // this.fetchDeviceLastSprinkles()  // Currently: 404 not found
   }
 
   fetchDevices = async () => {

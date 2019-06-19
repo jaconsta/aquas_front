@@ -79,6 +79,10 @@ class DashboardLayout extends React.Component {
     this.setState({ sidebarOpen: !this.state.sidebarOpen })
   }
 
+  closeSidebar = () => {
+    this.setState({ sidebarOpen:false })
+  }
+
   renderToolbarSeparator () {
     const toolbarSeparatorStyle = {minHeight: '64px'}
     return (
@@ -91,7 +95,7 @@ class DashboardLayout extends React.Component {
       <Fragment>
         {this.renderToolbarSeparator()}
         <List>
-          <ListItem onClick={this.toggleSidebar} component={Link} to="/dashboard" button>
+          <ListItem onClick={this.closeSidebar} component={Link} to="/dashboard" button>
             <ListItemIcon>
               <Dashboard />
             </ListItemIcon>
@@ -100,7 +104,7 @@ class DashboardLayout extends React.Component {
         </List>
         <Divider />
         <List subheader={<ListSubheader component='div'>General</ListSubheader>}>
-          <ListItem onClick={this.toggleSidebar}  component={props =>  <Link to='/dashboard/devices' {...props}/>} button>
+          <ListItem onClick={this.closeSidebar}  component={props =>  <Link to='/dashboard/devices' {...props}/>} button>
             <ListItemIcon>
               <Memory />
             </ListItemIcon>
