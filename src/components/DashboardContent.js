@@ -5,7 +5,7 @@ import CardContent from '@material-ui/core/CardContent'
 import Memory from '@material-ui/icons/Memory'
 
 import  DailySprinklesCard from './Dashboard/Cards/DailySprinklesCard'
-import { fetchDeviceCount, fetchDeviceDailySprinkles } from '../services/devices'
+import { fetchDeviceCount, fetchDeviceDailySprinkles, fetchDeviceActives } from '../services/devices'
 
 export default class DashboardContent extends React.Component {
   constructor (props) {
@@ -13,12 +13,14 @@ export default class DashboardContent extends React.Component {
     this.state = {
       totalDevices: 0,
       dailySprinkles: [],
+      activeDevices: 0,
     }
   }
 
   componentDidMount () {
     this.getDevices()
     this.getDeviceDailySprinkles()
+    this.getDevicesActiveCount()
   }
 
   getDevices = async () => {
@@ -29,6 +31,12 @@ export default class DashboardContent extends React.Component {
   getDeviceDailySprinkles = async () => {
     const { devices_count: dailySprinkles } = await fetchDeviceDailySprinkles()
     this.setState({ dailySprinkles })
+  }
+
+  getDevicesActiveCount = async () => {
+    const { active_devices: activeDevices } = await fetchDeviceActives()
+    console.log('activeDevices', activeDevices)
+    this.setState({ activeDevices })
   }
 
   renderActiveDevices () {
@@ -65,7 +73,7 @@ export default class DashboardContent extends React.Component {
             </div>
             <div>
               <div style={nameStyle}>Mis dispositivos activos</div>
-              <div style={totalHightlight}>_ / {this.state.totalDevices}</div>
+              <div style={totalHightlight}>{this.state.activeDevices} / {this.state.totalDevices}</div>
             </div>
           </div>
         </CardContent>

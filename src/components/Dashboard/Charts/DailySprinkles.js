@@ -12,7 +12,7 @@ const styles = {
 }
 
 const DailySprinkles = props => (
-  <ResponsiveContainer  width='99%' height={250}>
+  <ResponsiveContainer width='99%' height={250}>
     <LineChart
       className={props.classes.lineChart}
       data={props.data}
