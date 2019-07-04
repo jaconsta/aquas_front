@@ -4,10 +4,6 @@ import PropTypes from 'prop-types'
 import MediumCard from './MediumCard'
 import DailySprinkles from '../Charts/DailySprinkles'
 
-const cardStyle = {
-  width: '300px'
-}
-
 
 const DailySprinklesCard = props => (
   <MediumCard title={props.title}>

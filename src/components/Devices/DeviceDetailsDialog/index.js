@@ -12,9 +12,6 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 
 import DaysSwitches from './DaysSwitches'
 import TimeFields from './TimeFields'
-import {
-  fetchDeviceSchedule
-} from '../../../services/devices'
 
 const styles = {
   content: {width: '500px'},

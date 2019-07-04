@@ -14,7 +14,6 @@ import {
   fetchDeviceSchedule,
   setSprinkleNow,
   fetchDeviceLastHeartbeats,
-  fetchDeviceLastSprinkle
 } from '../../services/devices'
 
 const defaultAddNew = {
@@ -50,10 +49,10 @@ const deviceDetailsDefault = {
 export default class Devices extends React.Component {
   constructor (props) {
     super(props)
+    const latestUpdate = new Date().getTime()
     this.state = {
       devices: [],
       heartbeats: {},
-      lastSprinkles: {},
       selectedDeviceId: null,
       addNewDialog: {
         ...defaultAddNew
@@ -62,14 +61,15 @@ export default class Devices extends React.Component {
         ...deviceDetailsDefault
       },
       snackbarMessage: '',
-      snackbarOpen: false
+      snackbarOpen: false,
+      latestUpdate,
     }
   }
 
   componentDidMount () {
     this.fetchDevices()
     this.fetchDeviceHeartbeats()
-    // this.fetchDeviceLastSprinkles()  // Currently: 404 not found
+    this.scheduleUpdateDeviceHeartbeats()
   }
 
   fetchDevices = async () => {
@@ -79,12 +79,8 @@ export default class Devices extends React.Component {
 
   fetchDeviceHeartbeats = async () => {
     const heartbeats = await fetchDeviceLastHeartbeats()
-    this.setState({heartbeats: heartbeats})
-  }
-
-  fetchDeviceLastSprinkles = async () => {
-    const lastSprinkles = await fetchDeviceLastSprinkle()
-    this.setState({ lastSprinkles })
+    const latestUpdate = new Date().getTime()
+    this.setState({ heartbeats: heartbeats, latestUpdate })
   }
 
   fetchDeviceSprinkle = async (deviceId) => {
@@ -101,6 +97,12 @@ export default class Devices extends React.Component {
     } catch (e) {
       this.resetDetailsDialogToDefaults()
     }
+  }
+
+  scheduleUpdateDeviceHeartbeats = () => {
+    // Should use a socket io connection.
+    const fiveMinutes = 300000
+    setInterval(this.fetchDeviceHeartbeats, fiveMinutes)
   }
 
   getDevice = (id) => _.chain(this.state.devices).find({id}).defaultTo({}).value()
@@ -233,7 +235,6 @@ export default class Devices extends React.Component {
     return {
       devices: this.state.devices,
       heartbeats: this.state.heartbeats,
-      lastSprinkles: this.state.lastSprinkles,
       showDeviceDetailsDialog: this.showDeviceDetailsDialog,
       setSprinkleNow: this.setSprinkleNow
     }

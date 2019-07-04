@@ -35,7 +35,6 @@ const UserDevices = props => {
     sprinkle: _.find(props.heartbeats, {device: device.id, connection_status: 'sprinkle'}),
     showDeviceDetailsDialog: props.showDeviceDetailsDialog,
     setSprinkleNow: props.setSprinkleNow,
-    lastSprinkle: _.find(props.lastSprinkles, { device: device.id })
   })
 
   return (

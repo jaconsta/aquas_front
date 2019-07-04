@@ -3,7 +3,6 @@ import { apiRequest } from './requests'
 const DEVICES_URL = 'devices/'
 const HEARTBEAT_URL = 'devices_heartbeat/'
 const SPRINKLE_URL = 'devices_sprinkle/'
-const SCHEDULED_DATA_URL = 'devices_scheduled/'
 
 export const fetchDeviceCount = async () => {
     const { data } = await apiRequest({url: 'my_devices/device_count/'})
@@ -39,11 +38,6 @@ export const fetchDeviceLastHeartbeats = async () => {
 
 export const fetchDeviceDailySprinkles = async () => {
   const { data } = await apiRequest({url: `${HEARTBEAT_URL}daily_sprinkles/`})
-  return data
-}
-
-export const fetchDeviceLastSprinkle = async () => {
-  const { data } = await apiRequest({url: `${SCHEDULED_DATA_URL}latest/`})
   return data
 }
 

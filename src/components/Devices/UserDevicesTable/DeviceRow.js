@@ -36,8 +36,6 @@ const styles = {
   }
 }
 
-const timezoneOffset = -(new Date().getTimezoneOffset())
-
 const getTimezoneOffset = () => (new Date().getTimezoneOffset()) * 60000
 
 const isDeviceOnline = heartbeat => {
