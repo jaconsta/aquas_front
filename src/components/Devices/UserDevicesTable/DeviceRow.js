@@ -36,13 +36,11 @@ const styles = {
   }
 }
 
-const getTimezoneOffset = () => (new Date().getTimezoneOffset()) * 60000
-
 const isDeviceOnline = heartbeat => {
   const beat = _.get(heartbeat, 'connection_time')
   if(_.isNil(beat)) return null
 
-  const beatDate = (new Date(beat)).getTime()  // + getTimezoneOffset()
+  const beatDate = (new Date(beat)).getTime()
   const now = (new Date()).getTime()
   const fiveMinutes = 300000
 
@@ -61,8 +59,8 @@ const getSprinkleDate = sprinkle => {
   const sprinkleTime = _.get(sprinkle, 'connection_time')
   if(_.isNil(sprinkleTime)) return '-'
 
-  const sprinkleDate = (new Date(sprinkleTime)).getTime() - getTimezoneOffset()
-  return (new Date(sprinkleDate)).toISOString().slice(0, 16).replace('T', ' ')  // sprinkleTime.slice(0, 19).replace('T', ' ')
+  const sprinkleDate = (new Date(sprinkleTime)).getTime()
+  return (new Date(sprinkleDate)).toISOString().slice(0, 16).replace('T', ' ')
 }
 
 const DeviceRow = props => {
