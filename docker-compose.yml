@@ -1,0 +1,21 @@
+version: "3"
+services:
+  client:
+    image: jaconsta/aquas_front:latest
+    build: .
+    command: 'yarn start'
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    depends_on:
+      - server
+    volumes:
+      - ./src/:/app/src/
+      - ./node_modules/:/app/node_modules/
+  server:
+    image: jaconsta/aquas_web:latest
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
