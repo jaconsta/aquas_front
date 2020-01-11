@@ -1,18 +1,19 @@
 import React from 'react'
 import { withRouter } from "react-router-dom"
 
-import { userLogin } from '../services/users'
 import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Paper from '@material-ui/core/Paper'
-import Snackbar from '@material-ui/core/Snackbar'
-import TextField from '@material-ui/core/TextField'
 
-import pomelo_logo from '../static/images/pomelo_logo.png';
+import GeneralLayout from './GeneralLayout'
+import {
+  AuthInput,
+  RegisterText,
+  RememberLabel
+} from './styled'
+import { userLogin } from '../../services/users'
 
- class Login extends React.Component {
+class Login extends React.Component {
    constructor (props) {
      super(props)
      this.state = {
@@ -31,7 +32,6 @@ import pomelo_logo from '../static/images/pomelo_logo.png';
      } catch (err) {
        this.setState({snackbarOpen: true})
      }
-
    }
 
    handleSubmit = (event) => {
@@ -51,7 +51,7 @@ import pomelo_logo from '../static/images/pomelo_logo.png';
      })
    }
 
-   handleSnackbarClose = () => {
+   closeError = () => {
      this.setState({snackbarOpen: false})
    }
 
@@ -65,39 +65,18 @@ import pomelo_logo from '../static/images/pomelo_logo.png';
      history.push("dashboard")
    }
 
+   getErrorProps = () => ({
+     open: this.state.snackbarOpen,
+     onClose: this.closeError,
+     message: 'Error on login',
+   })
 
-   render () {
-    const layoutStyle = {
-      width: 'auto',
-      display: 'block', // Fix IE11 issue.
-    }
-    const paperStyle = {
-      marginTop: '100px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: '600px',
-      marginLeft: 'auto',
-      marginRight: 'auto'
-    }
-    const imageStyle = {
-      marginTop: '20px',
-      maxWidth: '180px',
-    }
-    const titleStyle = {
-      textAlign: 'center'
-    }
-
+  render () {
     return (
-      <div style={layoutStyle}>
-        <Paper style={paperStyle}>
-          <div>
-            <img alt="Pomelo logo" style={imageStyle} src={pomelo_logo} />
-            <h1 style={titleStyle}>Login</h1>
-          </div>
+      <GeneralLayout title={'Login'} error={this.getErrorProps()}>
           <form onSubmit={this.handleSubmit}>
             <FormControl margin="normal" required fullWidth>
-              <TextField
+              <AuthInput
                 id="email-input"
                 label="Email"
                 type="email"
@@ -108,7 +87,7 @@ import pomelo_logo from '../static/images/pomelo_logo.png';
               />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
-              <TextField
+              <AuthInput
                 id="password-input"
                 label="Password"
                 type="password"
@@ -119,28 +98,17 @@ import pomelo_logo from '../static/images/pomelo_logo.png';
               />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
-            <FormControlLabel
-              control={<Checkbox value="remember" onChange={this.handleCheck('rememberMe')} checked={this.state.rememberMe} color="primary" />}
-              label="Remember me"
-            />
-            <Button variant="contained" type='submit' onClick={this.handleSubmit}>
-              Login
-            </Button>
+              <RememberLabel
+                control={<Checkbox value="remember" onChange={this.handleCheck('rememberMe')} checked={this.state.rememberMe} color="primary" />}
+                label="Remember me"
+              />
+              <Button variant="contained" type='submit' onClick={this.handleSubmit}>
+                Login
+              </Button>
             </FormControl>
           </form>
-          <p>Not registered? <Button onClick={this.goToRegister}>register</Button></p>
-        </Paper>
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          open={this.state.snackbarOpen}
-          onClose={this.handleSnackbarClose}
-          ContentProps={{
-            'aria-describedby': 'message-id',
-          }}
-          message={<span id="message-id">Error on login</span>}
-        />
-
-      </div>
+          <p><RegisterText>Not registered?</RegisterText> <Button onClick={this.goToRegister}>register</Button></p>
+      </GeneralLayout>
     )
   }
 }

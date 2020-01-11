@@ -18,10 +18,10 @@ const styles = theme => ({
       marginRight: '40px',
     },
     [theme.breakpoints.down('sm')]: {
-      width: '90%',
+      width: '100%',
     },
     [theme.breakpoints.down('xs')]: {
-      width: '60%',
+      width: '100%',
     }
   },
   table: {
