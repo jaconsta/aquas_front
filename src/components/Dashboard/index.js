@@ -1,8 +1,6 @@
 import React, { Fragment } from 'react'
 import { Link, Switch, Route, withRouter } from 'react-router-dom'
 
-import Drawer from '@material-ui/core/Drawer'
-import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
@@ -14,14 +12,21 @@ import Divider from '@material-ui/core/Divider'
 import Hidden from '@material-ui/core/Hidden'
 import MenuIcon from '@material-ui/icons/Menu'
 import IconButton from '@material-ui/core/IconButton'
-
 import Dashboard from '@material-ui/icons/Dashboard';
 import Memory from '@material-ui/icons/Memory';
 
-import pomelo_logo from '../static/images/pomelo_logo.png';
+import pomelo_logo from '../../static/images/pomelo_logo.png';
 import DashboardContent from './DashboardContent'
-import Devices from './Devices'
-import { logoutUser } from './../utils/auth'
+import Devices from '../Devices'
+import {
+  DashboardContainer,
+  StyledAppBar,
+  TopLogo,
+  ToolbarSeparator,
+  StyledDrawer,
+  ContentContainer,
+} from './styled'
+import { logoutUser } from './../../utils/auth'
 
 
 class DashboardLayout extends React.Component {
@@ -43,21 +48,8 @@ class DashboardLayout extends React.Component {
   }
 
   renderTopToolbar () {
-    const appBarStyle = {
-      display: 'flex',
-      zIndex: 5000,
-      backgroundColor: '#6a944f',
-      top: 0,
-      left: 'auto',
-      flexGrow: 1,
-    }
-
-    const imageStyle = {
-     maxWidth: '180px',
-    }
-
     return (
-      <AppBar position="absolute" style={appBarStyle}>
+      <StyledAppBar position="absolute">
         <Toolbar>
           <Hidden mdUp implementation="css">
             <IconButton
@@ -67,10 +59,10 @@ class DashboardLayout extends React.Component {
               <MenuIcon />
             </IconButton>
           </Hidden>
-          <img alt={"Pomelo logo"} style={imageStyle} src={pomelo_logo} />
+          <TopLogo alt={"Pomelo logo"} src={pomelo_logo} />
           <Button color="inherit" onClick={this.logout}>Logout</Button>
         </Toolbar>
-      </AppBar>
+      </StyledAppBar>
 
     )
   }
@@ -83,17 +75,10 @@ class DashboardLayout extends React.Component {
     this.setState({ sidebarOpen:false })
   }
 
-  renderToolbarSeparator () {
-    const toolbarSeparatorStyle = {minHeight: '64px'}
-    return (
-      <div style={toolbarSeparatorStyle} />
-    )
-  }
-
   renderSidebarContent() {
     return (
       <Fragment>
-        {this.renderToolbarSeparator()}
+        <ToolbarSeparator />
         <List>
           <ListItem onClick={this.closeSidebar} component={Link} to="/dashboard" button>
             <ListItemIcon>
@@ -104,7 +89,7 @@ class DashboardLayout extends React.Component {
         </List>
         <Divider />
         <List subheader={<ListSubheader component='div'>General</ListSubheader>}>
-          <ListItem onClick={this.closeSidebar}  component={props =>  <Link to='/dashboard/devices' {...props}/>} button>
+          <ListItem onClick={this.closeSidebar} component={Link} to='/dashboard/devices' button>
             <ListItemIcon>
               <Memory />
             </ListItemIcon>
@@ -117,64 +102,45 @@ class DashboardLayout extends React.Component {
   }
 
   renderSidebar () {
-    const drawerStyle = {
-      display: 'flex',
-      position: 'relative',
-      width: '260px',
-      flexDirection: 'column'
-    }
-
     return (
       <Fragment>
         <Hidden smDown implementation="css">
-          <Drawer variant="permanent" style={drawerStyle}>
+          <StyledDrawer variant="permanent">
             {this.renderSidebarContent()}
-          </Drawer>
+          </StyledDrawer>
         </Hidden>
         <Hidden mdUp implementation="css">
-          <Drawer
+          <StyledDrawer
             variant="temporary"
-            style={drawerStyle}
             open={this.state.sidebarOpen}
             onClose={this.toggleSidebar}
           >
             {this.renderSidebarContent()}
-          </Drawer>
+          </StyledDrawer>
         </Hidden>
-
       </Fragment>
     )
   }
 
   renderContent () {
-    const style = {
-      flexGrow: 1,
-      padding: '20px 0px'
-    }
-
     return (
-      <div style={style}>
-        {this.renderToolbarSeparator()}
+      <ContentContainer>
+        <ToolbarSeparator />
         <Switch>
           <Route exact path='/dashboard' component={DashboardContent}/>
           <Route path='/dashboard/devices' component={Devices}/>
         </Switch>
-      </div>
+      </ContentContainer>
     )
   }
 
   render () {
-    const style = {
-      flexGrow: 1,
-      position: 'relative',
-      display: 'flex'
-    }
     return (
-      <div style={style}>
+      <DashboardContainer>
         {this.renderTopToolbar()}
         {this.renderSidebar()}
         {this.renderContent()}
-      </div>
+      </DashboardContainer>
     )
   }
 }

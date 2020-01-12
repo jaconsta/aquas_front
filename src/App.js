@@ -5,7 +5,7 @@ import UnauthenticatedRoute from './components/UnauthenticatedRoute'
 import PrivateRoute from './components/PrivateRoute'
 import Register from './components/UserAuth/Register'
 import Login from './components/UserAuth/Login'
-import DashboardLayout from './components/DashboardLayout'
+import Dashboard from './components/Dashboard'
 import {authenticated} from './constants'
 
 class App extends Component {
@@ -22,7 +22,7 @@ class App extends Component {
         <Route exact path="/" render={this.renderDefaultPage()} />
         <UnauthenticatedRoute path='/register' component={Register} />
         <UnauthenticatedRoute path='/login' component={Login} />
-        <PrivateRoute path='/dashboard' component={DashboardLayout} />
+        <PrivateRoute path='/dashboard' component={Dashboard} />
       </Switch>
     )
   }

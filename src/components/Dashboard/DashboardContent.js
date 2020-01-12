@@ -4,8 +4,8 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Memory from '@material-ui/icons/Memory'
 
-import  DailySprinklesCard from './Dashboard/Cards/DailySprinklesCard'
-import { fetchDeviceCount, fetchDeviceDailySprinkles, fetchDeviceActives } from '../services/devices'
+import  DailySprinklesCard from './Cards/DailySprinklesCard'
+import { fetchDeviceCount, fetchDeviceDailySprinkles, fetchDeviceActives } from '../../services/devices'
 
 export default class DashboardContent extends React.Component {
   constructor (props) {

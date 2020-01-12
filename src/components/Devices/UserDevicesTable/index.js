@@ -12,7 +12,7 @@ import DeviceRow from './DeviceRow'
 
 const styles = theme => ({
   paper: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     overflowX: 'auto',
     [theme.breakpoints.up('md')]: {
       marginRight: '40px',

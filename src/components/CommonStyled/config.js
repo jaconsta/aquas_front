@@ -5,3 +5,7 @@ const deviceSizes = {
 export const deviceBreakpoints = {
   mobile: `(max-width: ${deviceSizes.mobile})`
 }
+
+export const colors = {
+  primaryGreen: '#6a944f',
+}
