@@ -1,37 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { withStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-
-
-const styles = theme => ({
-  card: {
-    width: '400px',
-    margin: '10px 0px',
-    [theme.breakpoints.down('xs')]: {
-      width: '95%',
-    }
-  },
-  cardContent: {
-    paddingBottom: '16px !important',
-  },
-  title: {
-    color: 'gray',
-    marginBottom: '15px',
-  }
-})
+import {
+  MediumSizeCard,
+  MediumSizeCardContent,
+  Title
+} from './styled'
 
 const MediumCard = props => (
-  <Card className={props.classes.card}>
-    <CardContent className={props.classes.cardContent}>
+  <MediumSizeCard>
+    <MediumSizeCardContent>
       { props.title &&
-        <div className={props.classes.title}>{props.title}</div>
+        <Title>{props.title}</Title>
       }
       { props.children }
-    </CardContent>
-  </Card>
+    </MediumSizeCardContent>
+  </MediumSizeCard>
 )
 
 MediumCard.propTypes = {
@@ -40,4 +24,4 @@ MediumCard.propTypes = {
   title: PropTypes.string
 }
 
-export default withStyles(styles)(MediumCard)
+export default MediumCard

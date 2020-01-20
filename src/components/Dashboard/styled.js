@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 import AppBar from '@material-ui/core/AppBar'
+import Card from '@material-ui/core/Card'
 import Drawer from '@material-ui/core/Drawer'
 
 import { colors } from '../CommonStyled/config'
@@ -8,7 +9,7 @@ import { colors } from '../CommonStyled/config'
 export const StyledAppBar = styled(AppBar)`
   display: flex;
   flex-grow: 1;
-  z-index: 5000;
+  z-index: 5000 !important;
   background-color: ${colors.primaryGreen } !important;
   top: 0;
   left: auto;
@@ -38,4 +39,28 @@ export const DashboardContainer = styled.div`
 export const ContentContainer = styled.div`
   flex-grow: 1;
   padding: 20px 0px;
+`
+
+export const ActiveDevicesCard = styled(Card)`
+  width: 300px;
+`
+
+export const ActivesDevicesIconContainer = styled.div`
+  float: left;
+  color: green;
+  text-align: center;
+  height: 1.5em;
+  margin-right: 15px;
+  border: 2px solid green;
+  border-radius: 25px;
+  margin-top: 10px;
+`
+
+export const ActiveDevicesName = styled.div`
+  color: grey;
+`
+
+export const ActiveDevicesTotalHighlight = styled.div`
+  font-size: 1.4em;
+  font-weight: bold;
 `

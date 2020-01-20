@@ -1,10 +1,9 @@
 import _ from 'lodash'
-import React from 'react'
+import React, { Component } from 'react'
 
 import Snackbar from '@material-ui/core/Snackbar'
 
-import AddDeviceButton from './AddDeviceButton'
-import AddDeviceDialog from './AddDeviceDialog'
+import AddDevice from './AddDevice'
 import DeviceDetailsDialog from './DeviceDetailsDialog'
 import UserDevicesTable from './UserDevicesTable'
 import {
@@ -15,11 +14,6 @@ import {
   setSprinkleNow,
   fetchDeviceLastHeartbeats,
 } from '../../services/devices'
-
-const defaultAddNew = {
-  open: false,
-  name: ''
-}
 
 const sprinkleDefaults = {
   monday: false,
@@ -46,7 +40,7 @@ const deviceDetailsDefault = {
   }
 }
 
-export default class Devices extends React.Component {
+export default class Devices extends Component {
   constructor (props) {
     super(props)
     const latestUpdate = new Date().getTime()
@@ -54,9 +48,6 @@ export default class Devices extends React.Component {
       devices: [],
       heartbeats: {},
       selectedDeviceId: null,
-      addNewDialog: {
-        ...defaultAddNew
-      },
       deviceDetails: {
         ...deviceDetailsDefault
       },
@@ -107,26 +98,11 @@ export default class Devices extends React.Component {
 
   getDevice = (id) => _.chain(this.state.devices).find({id}).defaultTo({}).value()
 
-  // Add device Dialog actions
-  showAddDeviceDialog = () => {
-    this.setState({addNewDialog: {...this.state.addNewDialog, open: true}})
-  }
-
-  closeAddDeviceDialog = () => {
-    this.setState({ addNewDialog: {...defaultAddNew} })
-  }
-
-  handleChangeAddDevice = (e) => {
-    const name = e.target.value
-    this.setState({ addNewDialog: {...this.state.addNewDialog, name} })
-  }
-
-  postDevice = async () => {
-    const { name } = this.state.addNewDialog
+  postDevice = async (name) => {
     try {
       await addDevice({ name })
-      this.closeAddDeviceDialog()
       this.fetchDevices()
+      return true // processed
     } catch (e) {
       this.showSnackbar('Could not save device.')
     }
@@ -222,15 +198,6 @@ export default class Devices extends React.Component {
     )
   }
 
-  getAddNewDialogProps() {
-    return {
-      ...this.state.addNewDialog,
-      handleClose: this.closeAddDeviceDialog,
-      handleChange: this.handleChangeAddDevice,
-      addNewDevice: this.postDevice
-    }
-  }
-
   getDevicesTableProps() {
     return {
       devices: this.state.devices,
@@ -256,9 +223,8 @@ export default class Devices extends React.Component {
     return (
       <div>
         <h1>My devices</h1>
-        <AddDeviceButton onClick={this.showAddDeviceDialog} />
-        <AddDeviceDialog {...this.getAddNewDialogProps()}/>
-        <UserDevicesTable {...this.getDevicesTableProps()}/>
+        <UserDevicesTable {...this.getDevicesTableProps()} />
+        <AddDevice onSubmit={this.postDevice} />
         <DeviceDetailsDialog {...this.getDeviceDetailsProps()} />
         {this.renderErrorNotification()}
       </div>

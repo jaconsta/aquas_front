@@ -1,10 +1,15 @@
 import React from 'react'
 
-import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Memory from '@material-ui/icons/Memory'
 
 import  DailySprinklesCard from './Cards/DailySprinklesCard'
+import {
+  ActiveDevicesCard,
+  ActivesDevicesIconContainer,
+  ActiveDevicesName,
+  ActiveDevicesTotalHighlight,
+} from './styled'
 import { fetchDeviceCount, fetchDeviceDailySprinkles, fetchDeviceActives } from '../../services/devices'
 
 export default class DashboardContent extends React.Component {
@@ -35,49 +40,24 @@ export default class DashboardContent extends React.Component {
 
   getDevicesActiveCount = async () => {
     const { active_devices: activeDevices } = await fetchDeviceActives()
-    console.log('activeDevices', activeDevices)
     this.setState({ activeDevices })
   }
 
   renderActiveDevices () {
-    const cardStyle = {
-      width: '300px'
-    }
-
-    const iconStyle = {
-      float: 'left',
-      color: 'green',
-      textAlign: 'center',
-      height: '1.5em',
-      marginRight: '15px',
-      border: '2px solid green',
-      borderRadius: '25px',
-      marginTop: '10px'
-    }
-
-    const nameStyle = {
-      color: 'grey'
-    }
-
-    const totalHightlight = {
-      fontSize: '1.4em',
-      fontWeight: 'bold'
-    }
-
     return (
-      <Card style={cardStyle}>
+      <ActiveDevicesCard>
         <CardContent>
           <div>
-            <div style={iconStyle}>
+            <ActivesDevicesIconContainer>
               <Memory />
-            </div>
+            </ActivesDevicesIconContainer>
             <div>
-              <div style={nameStyle}>Mis dispositivos activos</div>
-              <div style={totalHightlight}>{this.state.activeDevices} / {this.state.totalDevices}</div>
+              <ActiveDevicesName>Mis dispositivos activos</ActiveDevicesName>
+              <ActiveDevicesTotalHighlight>{this.state.activeDevices} / {this.state.totalDevices}</ActiveDevicesTotalHighlight>
             </div>
           </div>
         </CardContent>
-      </Card>
+      </ActiveDevicesCard>
     )
   }
 

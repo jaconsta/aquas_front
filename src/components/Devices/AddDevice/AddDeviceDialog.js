@@ -8,6 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import TextField from '@material-ui/core/TextField'
 
 
+// Currently this element is deprecated.
 const AddDeviceDialog = props => {
   const handleSubmit = e => {
     e.preventDefault()

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import _ from 'lodash'
 
 import { withStyles } from '@material-ui/core/styles'
@@ -28,7 +29,15 @@ const styles = theme => ({
   },
 })
 
+const NoDevicesMessage = () => (
+  <div>
+    Oh no! This looks a bit empty, start by adding your first device!
+  </div>
+)
+
 const UserDevices = props => {
+  if (_.isEmpty(props.devices)) return <NoDevicesMessage />
+
   const deviceProps = device => ({
     device,
     heartbeat: _.find(props.heartbeats, {device: device.id, connection_status: 'heartbeat'}),
@@ -48,6 +57,10 @@ const UserDevices = props => {
       </Table>
     </Paper>
   )
+}
+
+UserDevices.propTypes = {
+  devices: PropTypes.array,
 }
 
 export default withStyles(styles)(UserDevices)

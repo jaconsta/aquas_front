@@ -8,6 +8,8 @@ import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import PinIcon from '@material-ui/icons/PinDrop'
 
+import { DeviceNameContainer } from './styled'
+
 const styles = {
   deviceName: {
     color:'green',
@@ -73,9 +75,13 @@ const DeviceRow = props => {
       <TableCell padding="checkbox">
         <Checkbox />
       </TableCell>
-      <TableCell className={props.classes.deviceName} onClick={e => props.showDeviceDetailsDialog(id)}>{name}</TableCell>
+      <TableCell className={props.classes.deviceName} onClick={e => props.showDeviceDetailsDialog(id)}>
+        <DeviceNameContainer>
+          <span className={`${props.classes.dot} ${props.classes[isOnline]}`}></span>
+          {name}
+        </DeviceNameContainer>
+      </TableCell>
       <TableCell>{lastSprinkle}</TableCell>
-      <TableCell><span className={`${props.classes.dot} ${props.classes[isOnline]}`}></span></TableCell>
       <TableCell>
         <Fab size="small" color="default" onClick={props.setSprinkleNow(id)}  aria-label="Run">
           <PinIcon color='primary' className={props.classes.pinIcon} />

@@ -14,7 +14,6 @@ const DeviceTableHeader = props => {
         </TableCell>
         <TableCell>Name</TableCell>
         <TableCell>Last sprinkle</TableCell>
-        <TableCell>Working</TableCell>
         <TableCell>Water Now</TableCell>
       </TableRow>
     </TableHead>
