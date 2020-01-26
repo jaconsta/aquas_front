@@ -30,7 +30,7 @@ const DetailsContent = props => {
     <React.Fragment>
       <Divider />
       <div style={{marginTop: '20px'}}>
-        <div>Schedule sprinkles</div>
+        <div>Schedule sprinkles by day</div>
         <div>
           <DaysSwitches
             sprinkleSchedule={props.sprinkleSchedule}

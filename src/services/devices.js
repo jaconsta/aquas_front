@@ -2,10 +2,10 @@ import { apiRequest } from './requests'
 
 const DEVICES_URL = 'devices/'
 const HEARTBEAT_URL = 'devices_heartbeat/'
-const SPRINKLE_URL = 'devices_sprinkle/'
+const SPRINKLE_URL = 'sprinkles/'
 
 export const fetchDeviceCount = async () => {
-    const { data } = await apiRequest({url: 'my_devices/device_count/'})
+    const { data } = await apiRequest({ url: `${DEVICES_URL}count/` })
     return data
 }
 
@@ -18,17 +18,22 @@ export const addDevice = async (body) => {
   return apiRequest({url: DEVICES_URL, method: 'post', body})
 }
 
+
+const getSprinklePath = deviceId => `${DEVICES_URL}${deviceId}/${SPRINKLE_URL}`
+
 export const setDeviceSchedule = async (body) => {
-  return apiRequest({url: SPRINKLE_URL, method: 'post', body})
+  const { deviceId } = body
+  return apiRequest({ url: getSprinklePath(deviceId), method: 'post', body })
 }
 
 export const fetchDeviceSchedule = async (deviceId) => {
-  const { data } = await apiRequest({url: `${SPRINKLE_URL}${deviceId}/`})
+  const { data } = await apiRequest({ url: getSprinklePath(deviceId) })
   return data
 }
 
 export const setSprinkleNow = (deviceId) => {
-  return apiRequest({url: `${SPRINKLE_URL}${deviceId}/now/`, method: 'post'})
+  const url = `${getSprinklePath(deviceId)}now/`
+  return apiRequest({ url, method: 'post' })
 }
 
 export const fetchDeviceLastHeartbeats = async () => {

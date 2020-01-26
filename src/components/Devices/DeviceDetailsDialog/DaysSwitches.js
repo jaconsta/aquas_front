@@ -1,30 +1,30 @@
 import React from 'react'
 import { map } from 'lodash'
 
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 
+import {
+  DaySwitchesContainer,
+  DaySelectColumn
+} from './styled'
+
+const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+
 const DaysSwitches = props => {
-  const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
   return (
-    <FormGroup row>
-      {map(days, day => (
-        <FormControlLabel
-          key={day}
-          control={
+    <DaySwitchesContainer>
+      {map(DAYS, day => (
+        <DaySelectColumn key={day}>
+          <span>{day.slice(0,3)}</span>
             <Switch
               checked={props.sprinkleSchedule[day]}
               onChange={props.setSelectedDay(day)}
               value={day}
             />
-          }
-          label={day}
-        />
+        </DaySelectColumn>
       ))}
-    </FormGroup>
+    </DaySwitchesContainer>
   )
-
 }
 
 export default DaysSwitches
