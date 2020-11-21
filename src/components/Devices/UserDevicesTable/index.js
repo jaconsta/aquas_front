@@ -10,6 +10,7 @@ import TableBody from '@material-ui/core/TableBody'
 import DeviceToolbar from './DeviceToolbar'
 import DeviceTableHeader from './DeviceTableHeader'
 import DeviceRow from './DeviceRow'
+import { TableResponsiveChunks } from './styled'
 
 const styles = theme => ({
   paper: {
@@ -49,12 +50,12 @@ const UserDevices = props => {
   return (
     <Paper className={props.classes.paper}>
       <DeviceToolbar />
-      <Table className={props.classes.table}>
+      <TableResponsiveChunks className={props.classes.table}>
         <DeviceTableHeader />
         <TableBody>
          { _.map(props.devices, device => <DeviceRow key={device.id} {...deviceProps(device)} />) }
         </TableBody>
-      </Table>
+      </TableResponsiveChunks>
     </Paper>
   )
 }
